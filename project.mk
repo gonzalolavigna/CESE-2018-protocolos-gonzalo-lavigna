@@ -22,11 +22,7 @@
 #PROJECT_PATH = examples/c/sapi/bare_metal/bluetooth
 #PROJECT_NAME = hm10_uart_bridge
 
-PROJECT_PATH = examples/c/sapi/bare_metal/i2c/IMUs
-PROJECT_NAME = mpu9250
-<<<<<<< HEAD
-
-#PROJECT_PATH = practicas/
-#PROJECT_NAME = practica02_ble_appinventor_02
-=======
->>>>>>> branch 'master' of https://github.com/epernia/cese-edu-ciaa-template.git
+#PROJECT_PATH = examples/c/sapi/bare_metal/i2c/IMUs
+#PROJECT_NAME = mpu9250
+PROJECT_PATH = practicas/
+PROJECT_NAME = practica02_ble_appinventor_02
