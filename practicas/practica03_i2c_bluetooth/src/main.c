@@ -119,64 +119,68 @@ int main( void )
       // Si leo un dato de una UART lo envio a al otra (bridge)
       if( uartReadByte( UART_PC, &data ) ) {
          uartWriteByte( UART_BLUETOOTH, data );
-      }
-      if( uartReadByte( UART_BLUETOOTH, &data ) ) {
-         if( data == 'h' ) {
-            gpioWrite( LEDB, ON );
-         }
-         if( data == 'l' ) {
-            gpioWrite( LEDB, OFF );
-         }
-         uartWriteByte( UART_PC, data );
-      }
-      
+      }     
       // Si presiono TEC1 imprime la lista de comandos AT
       if( !gpioRead( TEC1 ) ) {
          hm10blePrintATCommands( UART_BLUETOOTH );
       }
-      
-      // Si presiono TEC3 enciende el led de la pantalla de la app
-      if( !gpioRead( TEC3 ) ) {
-         uartWriteString( UART_BLUETOOTH, "LED_ON\r\n" );
-         delay(500);
+      if(mpu_9250_data.acce_new_string == TRUE){
+         printf("%s",mpu_9250_data.acce_string);
+         uartWriteString(UART_BLUETOOTH,mpu_9250_data.acce_string);
+         mpu_9250_data.acce_new_string = FALSE;
       }
-      // Si presiono TEC4 apaga el led de la pantalla de la app
-      if( !gpioRead( TEC4 ) ) {
-         uartWriteString( UART_BLUETOOTH, "LED_OFF\r\n" );
-         delay(500);
+      if(mpu_9250_data.gyro_new_string == TRUE){
+         printf("%s",mpu_9250_data.gyro_string);
+         mpu_9250_data.gyro_new_string = FALSE;
       }
+      if(mpu_9250_data.magn_new_string == TRUE){
+         printf("%s",mpu_9250_data.magn_string);
+         mpu_9250_data.magn_new_string = FALSE;
+      }
+      if(mpu_9250_data.temp_new_string == TRUE){
+         printf("%s",mpu_9250_data.temp_string);
+         mpu_9250_data.temp_new_string = FALSE;
+      }
+    
+
 
       if(delayRead(&delay_1_seg)==1){
-         gpioWrite(GPIO0,ON);
          mpu9250Read();
          // Imprimir resultados
+         /*
          printf( "Giroscopo:      (%f, %f, %f)   [rad/s]\r\n",
                    mpu9250GetGyroX_rads(),
                    mpu9250GetGyroY_rads(),
                    mpu9250GetGyroZ_rads()
                  );
+         */
+         gpioWrite(GPIO0,ON);
          sprintf(mpu_9250_data.acce_string,"Giroscopo:      (%f, %f, %f)   [rad/s]\r\n",
         		 mpu9250GetGyroX_rads(),
 				 mpu9250GetGyroY_rads(),
 				 mpu9250GetGyroZ_rads()
-				 );
-         printf("%s",mpu_9250_data.acce_string);
+				 );         
          mpu_9250_data.acce_new_string = TRUE;
-         /*
-         printf( "Acelerometro:   (%f, %f, %f)   [m/s2]\r\n",
+
+         sprintf(mpu_9250_data.gyro_string, "Acelerometro:   (%f, %f, %f)   [m/s2]\r\n",
                    mpu9250GetAccelX_mss(),
                    mpu9250GetAccelY_mss(),
                    mpu9250GetAccelZ_mss()
                  );
-         printf( "Magnetometro:   (%f, %f, %f)   [uT]\r\n",
+         mpu_9250_data.gyro_new_string = TRUE;
+
+         sprintf(mpu_9250_data.magn_string, "Magnetometro:   (%f, %f, %f)   [uT]\r\n",
                    mpu9250GetMagX_uT(),
                    mpu9250GetMagY_uT(),
                    mpu9250GetMagZ_uT()
                  );
-         printf( "Temperatura:    %f   [C]\r\n\r\n",
+         mpu_9250_data.magn_new_string = TRUE;
+
+         sprintf(mpu_9250_data.temp_string, "Temperatura:    %f   [C]\r\n\r\n",
                    mpu9250GetTemperature_C()
                  );
-		*/
+         mpu_9250_data.temp_new_string = TRUE;
+
          delayRead(&delay_1_seg);
          gpioWrite(GPIO0,OFF);
       }
@@ -211,7 +215,7 @@ void hm10blePrintATCommands( int32_t uart )
 void init_mpu_9250_data (void){
 	mpu_9250_data.acce_new_string = FALSE;
 	mpu_9250_data.gyro_new_string = FALSE;
-	mpu_9250_data.magn_string = FALSE;
+	mpu_9250_data.magn_new_string = FALSE;
 	mpu_9250_data.temp_new_string = FALSE;
 	bzero(mpu_9250_data.acce_string,100);
 	bzero(mpu_9250_data.gyro_string,100);
