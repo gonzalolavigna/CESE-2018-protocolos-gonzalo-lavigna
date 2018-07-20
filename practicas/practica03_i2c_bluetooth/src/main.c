@@ -124,6 +124,19 @@ int main( void )
       if( !gpioRead( TEC1 ) ) {
          hm10blePrintATCommands( UART_BLUETOOTH );
       }
+
+      if( uartReadByte( UART_BLUETOOTH, &data ) ) {
+         if( data == 'h' ) {
+            gpioWrite( LEDB, ON );
+         }
+         if( data == 'l' ) {
+            gpioWrite( LEDB, OFF );
+         }
+         uartWriteByte( UART_PC, data );
+      }
+
+
+      gpioWrite(GPIO0,ON);
       if(mpu_9250_data.acce_new_string == TRUE){
          printf("%s",mpu_9250_data.acce_string);
          uartWriteString(UART_BLUETOOTH,mpu_9250_data.acce_string);
@@ -131,21 +144,24 @@ int main( void )
       }
       if(mpu_9250_data.gyro_new_string == TRUE){
          printf("%s",mpu_9250_data.gyro_string);
+         uartWriteString(UART_BLUETOOTH,mpu_9250_data.gyro_string);
          mpu_9250_data.gyro_new_string = FALSE;
       }
       if(mpu_9250_data.magn_new_string == TRUE){
          printf("%s",mpu_9250_data.magn_string);
+         uartWriteString(UART_BLUETOOTH,mpu_9250_data.magn_string);
          mpu_9250_data.magn_new_string = FALSE;
       }
       if(mpu_9250_data.temp_new_string == TRUE){
          printf("%s",mpu_9250_data.temp_string);
+         uartWriteString(UART_BLUETOOTH,mpu_9250_data.temp_string);
          mpu_9250_data.temp_new_string = FALSE;
       }
-    
-
+      gpioWrite(GPIO0,OFF);
 
       if(delayRead(&delay_1_seg)==1){
-         mpu9250Read();
+
+    	  mpu9250Read();
          // Imprimir resultados
          /*
          printf( "Giroscopo:      (%f, %f, %f)   [rad/s]\r\n",
@@ -154,7 +170,7 @@ int main( void )
                    mpu9250GetGyroZ_rads()
                  );
          */
-         gpioWrite(GPIO0,ON);
+
          sprintf(mpu_9250_data.acce_string,"Giroscopo:      (%f, %f, %f)   [rad/s]\r\n",
         		 mpu9250GetGyroX_rads(),
 				 mpu9250GetGyroY_rads(),
@@ -182,7 +198,7 @@ int main( void )
          mpu_9250_data.temp_new_string = TRUE;
 
          delayRead(&delay_1_seg);
-         gpioWrite(GPIO0,OFF);
+
       }
 
    }
