@@ -40,11 +40,26 @@
 #define UART_PC        UART_USB
 #define UART_BLUETOOTH UART_232
 
+typedef struct {
+	uint8_t acce_string[100];
+	uint8_t gyro_string[100];
+	uint8_t magn_string[100];
+	uint8_t temp_string[100];
+	bool_t acce_new_string;
+	bool_t gyro_new_string;
+	bool_t magn_new_string;
+	bool_t temp_new_string;
+
+} string_mpu_9250_t;
+
 /*==================[definiciones de datos internos]=========================*/
 MPU9250_address_t addr = MPU9250_ADDRESS_0;
+string_mpu_9250_t mpu_9250_data;
+
 /*==================[definiciones de datos externos]=========================*/
 
 /*==================[declaraciones de funciones internas]====================*/
+void init_mpu_9250_data (void);
 
 /*==================[declaraciones de funciones externas]====================*/
 
@@ -90,6 +105,7 @@ int main( void )
       printf( "Se detiene el programa.\r\n" );
       while(1);
    }   
+   init_mpu_9250_data();
    printf("IMU MPU9250 inicializado correctamente.\r\n\r\n" );
    
    delay_t delay_1_seg;
@@ -139,6 +155,14 @@ int main( void )
                    mpu9250GetGyroY_rads(),
                    mpu9250GetGyroZ_rads()
                  );
+         sprintf(mpu_9250_data.acce_string,"Giroscopo:      (%f, %f, %f)   [rad/s]\r\n",
+        		 mpu9250GetGyroX_rads(),
+				 mpu9250GetGyroY_rads(),
+				 mpu9250GetGyroZ_rads()
+				 );
+         printf("%s",mpu_9250_data.acce_string);
+         mpu_9250_data.acce_new_string = TRUE;
+         /*
          printf( "Acelerometro:   (%f, %f, %f)   [m/s2]\r\n",
                    mpu9250GetAccelX_mss(),
                    mpu9250GetAccelY_mss(),
@@ -152,6 +176,7 @@ int main( void )
          printf( "Temperatura:    %f   [C]\r\n\r\n",
                    mpu9250GetTemperature_C()
                  );
+		*/
          delayRead(&delay_1_seg);
          gpioWrite(GPIO0,OFF);
       }
@@ -182,4 +207,15 @@ void hm10blePrintATCommands( int32_t uart )
    uartWriteString( uart, "AT+HELP\r\n" );
 }
 
+
+void init_mpu_9250_data (void){
+	mpu_9250_data.acce_new_string = FALSE;
+	mpu_9250_data.gyro_new_string = FALSE;
+	mpu_9250_data.magn_string = FALSE;
+	mpu_9250_data.temp_new_string = FALSE;
+	bzero(mpu_9250_data.acce_string,100);
+	bzero(mpu_9250_data.gyro_string,100);
+	bzero(mpu_9250_data.magn_string,100);
+	bzero(mpu_9250_data.temp_string,100);
+}
 /*==================[fin del archivo]========================================*/
