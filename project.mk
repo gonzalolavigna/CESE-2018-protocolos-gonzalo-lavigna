@@ -22,10 +22,14 @@
 
 
 
+#PROJECT_PATH = examples/c/lpc_open/bare_metal
+#PROJECT_NAME = usb_msc_host
+
 #PROJECT_PATH = examples/c/sapi/operating_systems/free_rtos/dynamic_mem
 #PROJECT_NAME = freeRTOS_03_ChanFatFS_SPI_SdCard_ADC_log
 
-
+#PROJECT_PATH = examples/c
+#PROJECT_NAME = newlib_printf_scanf
 
 #PROJECT_PATH = examples/c/sapi/bare_metal/bluetooth
 #PROJECT_NAME = hm10_uart_bridge
@@ -33,7 +37,13 @@
 #PROJECT_PATH = examples/c/sapi/bare_metal/i2c/IMUs
 #PROJECT_NAME = mpu9250
 
+
 PROJECT_PATH = practicas/
 PROJECT_NAME = test_ov7670
 
+
+
+#PROJECT_PATH = examples/c/sapi/bare_metal/usb
+#PROJECT_NAME = usb_device_01_hid_keyboard
+#PROJECT_NAME = usb_device_02_cdc_virtualSerialPort
 
