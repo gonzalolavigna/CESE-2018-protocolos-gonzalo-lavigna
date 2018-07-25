@@ -34,6 +34,6 @@
 #PROJECT_NAME = mpu9250
 
 PROJECT_PATH = practicas/
-PROJECT_NAME = test_sct
+PROJECT_NAME = test_ov7670
 
 
