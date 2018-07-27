@@ -39,7 +39,7 @@
 
 
 PROJECT_PATH = practicas/
-PROJECT_NAME = test_ov7670
+PROJECT_NAME = test_sct
 
 
 

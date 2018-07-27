@@ -32,7 +32,7 @@ int main( void )
 		   printf("OK\r\n");
 	   else printf("NOK\r\n");
 	   //delay(2000);
-	   if(i2cRead(I2C0,0x21,&sub_address,0,TRUE,_buffer,16,TRUE) == 1)
+	   if(i2cRead(I2C0,0x21,&sub_address,0,TRUE,_buffer,4,TRUE) == 1)
 		   printf("OK\r\n");
 	   else printf("NOK\r\n");
 	   printf("DUTY CYCLE:%d\r\n",Sct_GetDutyCycle(CTOUT6));
