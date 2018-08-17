@@ -28,14 +28,20 @@ int main( void )
    delay(10000);
    while(1){
 	   delay(2000);
+	   printf("RETURN VALUE 1:0x%X %d\r\n",glavignaI2cRead(I2C0,0x21,&sub_address,1,TRUE,_buffer,0,TRUE));
+/*
 	   if(i2cRead(I2C0,0x21,&sub_address,1,TRUE,_buffer,0,TRUE) == 1)
 		   printf("OK\r\n");
 	   else printf("NOK\r\n");
 	   //delay(2000);
+*/
+	   printf("RETURN VALUE 2: 0x%X %d\r\n",glavignaI2cRead(I2C0,0x21,&sub_address,0,TRUE,_buffer,4,TRUE));
+/*
 	   if(i2cRead(I2C0,0x21,&sub_address,0,TRUE,_buffer,4,TRUE) == 1)
 		   printf("OK\r\n");
 	   else printf("NOK\r\n");
 	   printf("DUTY CYCLE:%d\r\n",Sct_GetDutyCycle(CTOUT6));
+*/
 	   printf("Registro %d Valor %d %d %d %d\r\n",sub_address,_buffer[0],_buffer[1],_buffer[2],_buffer[3]);
    }
 

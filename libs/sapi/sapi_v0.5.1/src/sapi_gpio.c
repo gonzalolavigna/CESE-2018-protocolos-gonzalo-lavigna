@@ -232,7 +232,7 @@ bool_t gpioInit( gpioMap_t pin, gpioInit_t config )
       Chip_SCU_PinMux(
          pinNamePort,
          pinNamePin,
-         SCU_MODE_INACT | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS,
+         SCU_MODE_INACT | SCU_MODE_INBUFF_EN  /*| SCU_MODE_ZIF_DIS*/,
          func
       );
       Chip_GPIO_SetDir( LPC_GPIO_PORT, gpioPort, ( 1 << gpioPin ), GPIO_INPUT );
@@ -242,7 +242,7 @@ bool_t gpioInit( gpioMap_t pin, gpioInit_t config )
       Chip_SCU_PinMux(
          pinNamePort,
          pinNamePin,
-         SCU_MODE_PULLUP | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS,
+         SCU_MODE_PULLUP | SCU_MODE_INBUFF_EN /* | SCU_MODE_ZIF_DIS*/,
          func
       );
       Chip_GPIO_SetDir( LPC_GPIO_PORT, gpioPort, ( 1 << gpioPin ), GPIO_INPUT );
@@ -252,7 +252,7 @@ bool_t gpioInit( gpioMap_t pin, gpioInit_t config )
       Chip_SCU_PinMux(
          pinNamePort,
          pinNamePin,
-         SCU_MODE_PULLDOWN | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS,
+         SCU_MODE_PULLDOWN | SCU_MODE_INBUFF_EN /*| SCU_MODE_ZIF_DIS*/,
          func
       );
       Chip_GPIO_SetDir( LPC_GPIO_PORT, gpioPort, ( 1 << gpioPin ), GPIO_INPUT );
@@ -261,7 +261,7 @@ bool_t gpioInit( gpioMap_t pin, gpioInit_t config )
       Chip_SCU_PinMux(
          pinNamePort,
          pinNamePin,
-         SCU_MODE_REPEATER | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS,
+         SCU_MODE_REPEATER | SCU_MODE_INBUFF_EN /*| SCU_MODE_ZIF_DIS*/,
          func
       );
       Chip_GPIO_SetDir( LPC_GPIO_PORT, gpioPort, ( 1 << gpioPin ), GPIO_INPUT );

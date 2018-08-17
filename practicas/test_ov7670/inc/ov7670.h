@@ -3,14 +3,32 @@
 #include "sapi_peripheral_map.h"
 
 typedef struct {
-	uint8_t reg_num;
-	uint16_t value;
-}regval_list;
+	uint8_t reg_address;
+	uint8_t reg_value;
+} regval_list;
+
+typedef enum {
+	NO_PATTERN ,
+	SHIFTING_1,
+	BAR_COLOCAR_BAR,
+	FADE_TO_GRAY,
+} ov7670_test_pattern_t;
 
 void OV7670initXClk(uint32_t frequency);
+void OV7670initI2c(void);
+
 uint8_t OV7670getXClkDutyCycle(void);
 bool_t OV7670readReg(uint8_t reg_address, uint8_t * reg_value);
-uint16_t OV7670readRegDebug(uint8_t reg_address, uint8_t * reg_value);
+bool_t OV7670writeReg (uint8_t reg_address, uint8_t  reg_value);
+bool_t OV7670ReadAllRegs(void);
+bool_t OV7670WriteArray(regval_list *vals);
+bool_t OV7670ConfigTestPattern (ov7670_test_pattern_t test_pattern);
+
+void OV7670ConfigYUV422(void);
+void OV7670ConfigQVGA(void);
+void OV7670Init (void);
+
+#define MAX_REG_ADDRES 0x6F
 
 #define camAddr 	0x21
 #define camAddr_WR	0x42
@@ -287,3 +305,6 @@ uint16_t OV7670readRegDebug(uint8_t reg_address, uint8_t * reg_value);
 #define AWBCTR2		0x6d	/* AWB Control 2 */
 #define AWBCTR1		0x6e	/* AWB Control 1 */
 #define AWBCTR0		0x6f	/* AWB Control 0 */
+#define SCALING_XSC 0x70	/* Test Pattern Y*/
+#define SCALING_YSC 0x71	/* Test Pattern Y*/
+#define TEST_PATTERN_MASK 0x7F /*Only Touch Registers associated to test patterns*/

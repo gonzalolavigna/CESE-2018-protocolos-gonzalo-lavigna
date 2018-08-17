@@ -107,6 +107,21 @@ bool_t i2cWrite( i2cMap_t  i2cNumber,
                  bool_t   sendWriteStop );
 
 
+uint16_t glavignaI2cRead( i2cMap_t  i2cNumber,
+                uint8_t  i2cSlaveAddress,
+                uint8_t* dataToReadBuffer,
+                uint16_t dataToReadBufferSize,
+                bool_t   sendWriteStop,
+                uint8_t* receiveDataBuffer,
+                uint16_t receiveDataBufferSize,
+                bool_t   sendReadStop );
+
+uint16_t glavignaI2cWrite( i2cMap_t  i2cNumber,
+                 uint8_t  i2cSlaveAddress,
+                 uint8_t* transmitDataBuffer,
+                 uint16_t transmitDataBufferSize,
+                 bool_t   sendWriteStop );
+
 // Software Master I2C
 
 #if( SOFTWARE_I2C_DEBUG == 1 )
@@ -128,6 +143,7 @@ bool_t i2cSoftwareMasterWriteByte( uint8_t dataByte );
 
 uint8_t i2cSoftwareMasterReadByte( bool_t ack );
 #endif
+
 
 /*==================[ISR external functions declaration]=====================*/
 

@@ -96,6 +96,21 @@ static bool_t i2cHardwareWrite( i2cMap_t  i2cNumber,
                                 uint16_t transmitDataBufferSize,
                                 bool_t   sendWriteStop );
 
+static uint16_t glavignaI2cHardwareRead( i2cMap_t  i2cNumber,
+                               uint8_t  i2cSlaveAddress,
+                               uint8_t* dataToReadBuffer,
+                               uint16_t dataToReadBufferSize,
+                               bool_t   sendWriteStop,
+                               uint8_t* receiveDataBuffer,
+                               uint16_t receiveDataBufferSize,
+                               bool_t   sendReadStop );
+
+static uint16_t glavignaI2cHardwareWrite( i2cMap_t  i2cNumber,
+                                uint8_t  i2cSlaveAddress,
+                                uint8_t* transmitDataBuffer,
+                                uint16_t transmitDataBufferSize,
+                                bool_t   sendWriteStop );
+
 #endif
 
 /*==================[internal data definition]===============================*/
@@ -788,3 +803,132 @@ void i2cSoftwareMasterPinTest( void )
 /*==================[ISR external functions definition]======================*/
 
 /*==================[end of file]============================================*/
+
+/*==================glavigna modifications============================================*/
+uint16_t glavignaI2cWrite( i2cMap_t  i2cNumber,
+                 uint8_t  i2cSlaveAddress,
+                 uint8_t* transmitDataBuffer,
+                 uint16_t transmitDataBufferSize,
+                 bool_t   sendWriteStop )
+{
+
+   uint16_t retVal;
+
+   if( i2cNumber != I2C0 ) {
+      return FALSE;
+   }
+
+   retVal = glavignaI2cHardwareWrite( i2cNumber,
+                              i2cSlaveAddress,
+                              transmitDataBuffer,
+                              transmitDataBufferSize,
+                              sendWriteStop );
+   return retVal;
+}
+
+
+static uint16_t glavignaI2cHardwareWrite( i2cMap_t  i2cNumber,
+                                uint8_t  i2cSlaveAddress,
+                                uint8_t* transmitDataBuffer,
+                                uint16_t transmitDataBufferSize,
+                                bool_t   sendWriteStop )
+{
+
+   //TODO: ver i2cData.options si se puede poner la condicion opcional de stop
+
+   I2CM_XFER_T i2cData;
+
+   if( i2cNumber != I2C0 ) {
+      return FALSE;
+   }
+
+   // Prepare the i2cData register
+   i2cData.slaveAddr = i2cSlaveAddress;
+   i2cData.options   = 0;
+   i2cData.status    = 0;
+   i2cData.txBuff    = transmitDataBuffer;
+   i2cData.txSz      = transmitDataBufferSize;
+   i2cData.rxBuff    = 0;
+   i2cData.rxSz      = 0;
+
+   /* Send the i2c data */
+   if( Chip_I2CM_XferBlocking( LPC_I2C0, &i2cData ) == 0 ) {
+      return FALSE;
+   }
+
+   /* *** TEST I2C Response ***
+
+   Chip_I2CM_XferBlocking( LPC_I2C0, &i2cData );
+
+   if( i2cData.status == I2CM_STATUS_OK){
+      while(1){
+         gpioWrite( LEDB, ON );
+         delay(100);
+         gpioWrite( LEDB, OFF );
+         delay(100);
+      }
+   }
+
+   *** END - TEST I2C Response *** */
+
+   return i2cData.status;
+}
+
+
+uint16_t glavignaI2cRead( i2cMap_t  i2cNumber,
+                uint8_t  i2cSlaveAddress,
+                uint8_t* dataToReadBuffer,
+                uint16_t dataToReadBufferSize,
+                bool_t   sendWriteStop,
+                uint8_t* receiveDataBuffer,
+                uint16_t receiveDataBufferSize,
+                bool_t   sendReadStop )
+{
+
+   uint16_t retVal = FALSE;
+
+   if( i2cNumber != I2C0 ) {
+      return FALSE;
+   }
+
+
+   retVal = glavignaI2cHardwareRead( i2cNumber,
+                             i2cSlaveAddress,
+                             dataToReadBuffer,
+                             dataToReadBufferSize,
+                             sendWriteStop,
+                             receiveDataBuffer,
+                             receiveDataBufferSize,
+                             sendReadStop );
+   return retVal;
+}
+
+
+static uint16_t glavignaI2cHardwareRead( i2cMap_t  i2cNumber,
+                               uint8_t  i2cSlaveAddress,
+                               uint8_t* dataToReadBuffer,
+                               uint16_t dataToReadBufferSize,
+                               bool_t   sendWriteStop,
+                               uint8_t* receiveDataBuffer,
+                               uint16_t receiveDataBufferSize,
+                               bool_t   sendReadStop )
+{
+
+   //TODO: ver i2cData.options si se puede poner la condicion opcional de stop
+
+   I2CM_XFER_T i2cData;
+
+   i2cData.slaveAddr = i2cSlaveAddress;
+   i2cData.options   = 0;
+   i2cData.status    = 0;
+   i2cData.txBuff    = dataToReadBuffer;
+   i2cData.txSz      = dataToReadBufferSize;
+   i2cData.rxBuff    = receiveDataBuffer;
+   i2cData.rxSz      = receiveDataBufferSize;
+
+   if( Chip_I2CM_XferBlocking( LPC_I2C0, &i2cData ) == 0 ) {
+      return FALSE;
+   }
+
+   return i2cData.status;
+}
