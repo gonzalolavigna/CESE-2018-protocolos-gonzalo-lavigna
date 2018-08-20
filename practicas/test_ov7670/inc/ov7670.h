@@ -2,6 +2,9 @@
 #include "sapi_datatypes.h"
 #include "sapi_peripheral_map.h"
 
+#define RISING_EDGE 0
+#define FALLING_EDGE 1
+
 typedef struct {
 	uint8_t reg_address;
 	uint8_t reg_value;
@@ -22,11 +25,13 @@ bool_t OV7670readReg(uint8_t reg_address, uint8_t * reg_value);
 bool_t OV7670writeReg (uint8_t reg_address, uint8_t  reg_value);
 bool_t OV7670ReadAllRegs(void);
 bool_t OV7670WriteArray(regval_list *vals);
-bool_t OV7670ConfigTestPattern (ov7670_test_pattern_t test_pattern);
 
 void OV7670ConfigYUV422(void);
 void OV7670ConfigQVGA(void);
 void OV7670Init (void);
+
+bool_t OV7670ConfigTestPattern (ov7670_test_pattern_t test_pattern);
+void OV7670CofigPLLDivider (uint8_t value);
 
 #define MAX_REG_ADDRES 0x6F
 
