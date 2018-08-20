@@ -125,23 +125,33 @@ regval_list ov7670_default_regs[] = {
 };
 
 
-
+//Se habilita el clock hacia la camara que tiene que estar entre 10Mhz y 48Mhz hacia la camara
+//El clock sale por el PIN CT OUT 9 o sea el SPIO MOSI de la EDU CIAA
 void OV7670initXClk(uint32_t frequency){
-//Habilita el clock del pixel a traves del GPIO 02 o sea CTOU6
 	Sct_Init(frequency);
    	Sct_EnablePwmFor(CTOUT9);//CT OUT 9 //SPI MOSI en EDU-CIAA
-   	Sct_SetDutyCycle(CTOUT9,128);
-//Espero 10 segundos a que inicialice la camara
+   	Sct_SetDutyCycle(CTOUT9,128); //Configuro duty cycle al 50%
+   	//Espero 1 segundo a que inicialice la camara solo para tener cuidado
    	delay(1000);
 }
-
+//Se obtiene el duty cycle configurado
 uint8_t OV7670getXClkDutyCycle(void){
 	return Sct_GetDutyCycle(CTOUT9);
 }
-
+//Se inicializa el I2C a 100Khz se probo a 400 Khz y no funciono.
 void OV7670initI2c(void){
 	   i2cInit(I2C0,100000);
 }
+
+//Funcion para leer los registros de la camara. Funcion bloqueante-
+//El valor leido se devuelve por referencia.
+//Una lectura hacia la camara esta formada por dos transferencia una de write indicando el registro que se quiere leer
+//Otra transferencia de read con el address de la camara. Con lo cual son dos transferencia I2C.
+//Tener en mente tambien
+//Como pueden haber ciertas transferencias que fallen se hace la transaccion hasta que tanto los dos ciclos finalizaron correctamente.
+//Cualquier ciclo que no finalice con OK se repite hasta finalizar.
+//TODO: Mejorar valor de retorno por el momento no se considero necesario.
+
 
 bool_t OV7670readReg(uint8_t reg_address, uint8_t * reg_value){
 	uint16_t i2c_transfer_status = I2CM_STATUS_BUSY ;
@@ -156,6 +166,10 @@ bool_t OV7670readReg(uint8_t reg_address, uint8_t * reg_value){
 	}
 	return TRUE;
 }
+//Se recibe el address y el dato y se hace una sola tranaccion para finalizar la escritura.
+//Como pueden haber ciertas transferencias que fallen se hace la transaccion hasta que tanto los dos ciclos finalizaron correctamente.
+//Cualquier ciclo que no finalice con OK se repite hasta finalizar.
+//TODO: Mejorar valor de retorno por el momento no se considero necesario.
 
 bool_t OV7670writeReg (uint8_t reg_address, uint8_t  reg_value){
 	bool_t flag;
@@ -172,7 +186,8 @@ bool_t OV7670writeReg (uint8_t reg_address, uint8_t  reg_value){
 	return TRUE;
 }
 
-//Only for Debug
+//Solo para debug se leen todos los registros de la camara.
+//TODO:Se deberian agregar a los registros un string asociados donde se tenga una descripcion del mismo.
 bool_t OV7670ReadAllRegs(void){
 	bool_t flag;
 	uint8_t reg_address = 0;
@@ -187,6 +202,9 @@ bool_t OV7670ReadAllRegs(void){
 	return flag;
 }
 
+
+//Funcion para escribir a la camara con un arreglo de estructuras que contienen address y datos.
+//Funcion realiza un chequeo en el cual se fija si el dato escrito coincide.
 
 bool_t OV7670WriteArray(regval_list *vals){
 	bool_t flag;

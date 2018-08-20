@@ -5,11 +5,13 @@
 #define RISING_EDGE 0
 #define FALLING_EDGE 1
 
+//Estructura para poder escribir en modo burst
 typedef struct {
 	uint8_t reg_address;
 	uint8_t reg_value;
 } regval_list;
 
+//ENUM donde se escriben los posibles valores para configurar un patron de test de la camara.
 typedef enum {
 	NO_PATTERN ,
 	SHIFTING_1,
@@ -33,6 +35,8 @@ void OV7670Init (void);
 bool_t OV7670ConfigTestPattern (ov7670_test_pattern_t test_pattern);
 void OV7670CofigPLLDivider (uint8_t value);
 
+
+//Registro de la camara con una explicacion de los mismos.
 #define MAX_REG_ADDRES 0x6F
 
 #define camAddr 	0x21
